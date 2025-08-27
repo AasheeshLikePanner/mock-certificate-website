@@ -5,67 +5,139 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SWAYAM - Certificate Viewer</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         body {
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
         }
         
         .top-bar {
-            background-color: #f8f8f8;
-            border-bottom: 1px solid #e7e7e7;
-            padding: 10px 0;
+            background-color: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 12px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .navbar-brand img {
+            height: 45px;
+            padding: 2px 0;
         }
         
         .top-navigation {
             text-align: right;
-            padding: 15px 0;
+            padding: 12px 0;
+            font-size: 15px;
         }
         
         .top-navigation a {
-            color: #555;
+            color: #1a5b97;
             text-decoration: none;
+            margin: 0 5px;
+            font-weight: 500;
         }
         
         .top-navigation a:hover {
-            color: #23527c;
+            color: #0d3c6a;
             text-decoration: underline;
         }
         
         .certificate-container {
-            margin: 20px auto;
+            margin: 25px auto;
             min-height: 700px;
             border: 1px solid #ddd;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 15px rgba(0,0,0,0.08);
+            background: #fff;
+            border-radius: 5px;
+            padding: 20px;
         }
         
-        iframe {
-            border: none;
+        .pdf-viewer {
+            width: 100%;
+            height: 627px;
+            border: 1px solid #ddd;
+            background: #f0f0f0;
+        }
+        
+        .loading-message {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            color: #666;
+            flex-direction: column;
+        }
+        
+        .loading-message i {
+            font-size: 48px;
+            color: #1a5b97;
+            margin-bottom: 15px;
         }
         
         #footer {
-            background-color: #f8f8f8;
-            border-top: 1px solid #e7e7e7;
-            padding: 20px 0;
-            margin-top: 20px;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 25px 0;
+            margin-top: 30px;
             font-size: 14px;
-            color: #555;
+        }
+        
+        #footer a {
+            color: #3498db;
         }
         
         .pull-right {
             float: right;
         }
         
+        h3 {
+            color: #1a5b97;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .status-message {
+            text-align: center;
+            padding: 10px;
+            margin-top: 15px;
+            border-radius: 5px;
+        }
+        
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+        }
+        
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
+        }
+        
         @media (max-width: 767px) {
             .top-navigation {
                 text-align: center;
+                padding-top: 5px;
             }
             
             .pull-right {
                 float: none;
                 text-align: center;
                 margin-top: 10px;
+            }
+            
+            .certificate-container {
+                padding: 10px;
+            }
+            
+            .pdf-viewer {
+                height: 400px;
             }
         }
     </style>
@@ -77,13 +149,14 @@
                 <div class="row">
                     <div class="col-sm-3 col-xs-12 top-left">
                         <a class="navbar-brand" href="https://swayam.gov.in/">
-                            <img src="https://storage.googleapis.com/swayam2-node/assets/img/swayam_images/swayam_logo.png" alt="swayam-logo" height="50">
+                            <img src="https://storage.googleapis.com/swayam2-node/assets/img/swayam_images/swayam_logo.png" alt="swayam-logo">
                         </a>
                     </div>
                     <div class="col-sm-9 col-xs-12">
                         <div class="top-navigation">
                             <a href="https://swayam.gov.in/about">About Swayam</a> |
-                            <a href="#" onclick="event.preventDefault(); showAllCourses('');" style="cursor: pointer;">All Courses</a>
+                            <a href="#" onclick="event.preventDefault(); showAllCourses('');" style="cursor: pointer;">All Courses</a> |
+                            <a href="https://swayam.gov.in/help">Help</a>
                         </div>
                     </div>
                 </div>
@@ -92,7 +165,17 @@
     </header>
 
     <div class="container certificate-container">
-        <iframe src="https://storage.googleapis.com/swayam-node2-production_certificates/examform/certificates/ns_nou24_cs18/2415130012366_nou24_cs18.pdf?X-Goog-Algorithm=GOOG4-RSA-SHA256&amp;X-Goog-Credential=sa-google-drive%40swayam-node2-production.iam.gserviceaccount.com%2F20250827%2Fauto%2Fstorage%2Fgoog4_request&amp;X-Goog-Date=20250827T112353Z&amp;X-Goog-Expires=3600&amp;X-Goog-SignedHeaders=host&amp;X-Goog-Signature=09d01882612a4330169e55040b9cfaab2f5207c48da702ae1eb8b59b899559d23d796ed05e457046c0857bb5a76c61fe96db5f210751af0f9ff92fb66b6ff7f7032160153711857314aa8ca5e76051a2245ba710303dd66af39d890ded169d65aa4b74941736997c6d12f1ad112eb0ba0dfc82bf6f6047a69118f35ce763ff433d9ee538eb1084d6e401c76bd277e5bb39fa48835e5fc612d6f1f35e9fa52c86580283ebae04b1de5a921cb63c20c97a3f7bf8ccc2c9f8d748df755207fe7cee3168be2d4ddac1c2a165a2d0b07a2e695eac0c51c0dcea1820a7251c4a05c3eca731dbe67f5c5e16cd2d394109e7281b61d418d2010bacc4031b50635ccbd9c0#view=fit&amp;toolbar=0" width="100%" height="627" alt="Certificate Image" scrolling="no"></iframe>
+        <h3>SWAYAM Certificate Viewer</h3>
+        
+        <div class="pdf-viewer" id="pdf-viewer">
+            <div class="loading-message" id="loading-message">
+                <i class="fa fa-spinner fa-spin"></i>
+                <p>Loading saksham.pdf...</p>
+            </div>
+            <iframe id="pdf-iframe" style="width: 100%; height: 100%; border: none; display: none;"></iframe>
+        </div>
+        
+        <div id="status-message" class="status-message" style="display: none;"></div>
     </div>
 
     <footer id="footer">
@@ -109,9 +192,54 @@
     <script>
         function showAllCourses(courseType) {
             alert('This would normally show all courses. For demonstration only.');
-            // In the real implementation, this would redirect to the courses page
-            // window.location.href = 'https://swayam.gov.in/courses';
         }
+        
+        // Function to load the PDF
+        function loadPDF() {
+            const pdfUrl = './saksham.pdf';
+            const iframe = document.getElementById('pdf-iframe');
+            const loadingMessage = document.getElementById('loading-message');
+            const statusMessage = document.getElementById('status-message');
+            
+            // Check if PDF exists
+            fetch(pdfUrl, { method: 'HEAD' })
+            .then(response => {
+                if (response.ok) {
+                    // PDF exists, load it
+                    iframe.src = pdfUrl;
+                    iframe.style.display = 'block';
+                    loadingMessage.style.display = 'none';
+                    
+                    // Show success message
+                    statusMessage.textContent = 'saksham.pdf loaded successfully!';
+                    statusMessage.className = 'status-message success';
+                    statusMessage.style.display = 'block';
+                    
+                    // Hide message after 5 seconds
+                    setTimeout(() => {
+                        statusMessage.style.display = 'none';
+                    }, 5000);
+                } else {
+                    throw new Error('PDF not found');
+                }
+            })
+            .catch(error => {
+                // PDF not found or error loading
+                loadingMessage.innerHTML = `
+                    <i class="fa fa-exclamation-triangle" style="color: #d9534f;"></i>
+                    <p>Error: saksham.pdf not found</p>
+                    <p style="font-size: 14px; margin-top: 10px;">Please make sure the PDF file is in the same folder as this HTML file.</p>
+                `;
+                
+                // Show error message
+                statusMessage.textContent = 'Error: saksham.pdf not found in the current directory.';
+                statusMessage.className = 'status-message error';
+                statusMessage.style.display = 'block';
+            });
+        }
+        
+        // Load the PDF when the page loads
+        window.onload = loadPDF;
     </script>
 </body>
 </html>
